@@ -8,6 +8,7 @@ set(LLVM_DIR "D:/ProgramFiles/LLVM/lib/cmake/llvm")
 set(LLVM_ROOT_DIR "D:/ProgramFiles/LLVM")
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 find_package(LLVM REQUIRED CONFIG)
 
@@ -82,27 +83,29 @@ FUNCTION(PREPEND_LLVM var)
     set(${var} "${listVar}" PARENT_SCOPE)
 ENDFUNCTION(PREPEND_LLVM)
 
-PREPEND_LLVM(files_to_install ${llvm_libs})
 
 target_link_libraries(om PRIVATE ${llvm_libs} )
 if(WIN32)
-  target_link_libraries(om PRIVATE pthread Shell32 ole32)
+target_link_libraries(om PRIVATE pthread Shell32 ole32)
 endif(WIN32)
 
 
 # LibOm ============================================
 # add_executable(libome libom/src/libom.c)
 add_library(stdom libom/src/libom.c)
-
+list(APPEND files_libom "libom/src/std.om")
 # Install ======================================
 install(TARGETS om 
-        RUNTIME DESTINATION bin 
-        LIBRARY DESTINATION lib 
-        ARCHIVE DESTINATION lib
+RUNTIME DESTINATION bin 
+LIBRARY DESTINATION lib 
+ARCHIVE DESTINATION lib
 )
 
 # only required if making a installer
+# PREPEND_LLVM(files_to_install ${llvm_libs})
 # install(FILES ${files_to_install} DESTINATION bin)
+install(FILES ${files_libom} DESTINATION include)
+install(TARGETS stdom LIBRARY DESTINATION libs)
 
 # CPack ========================================
 

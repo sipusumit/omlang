@@ -10,6 +10,10 @@
 #define Z_VERSION "unknown"
 #endif
 
+
+#ifdef WIN32
+  #include "libloaderapi.h"
+#endif
 /*
   Usage
     om [options] file
@@ -54,7 +58,13 @@ int main(int argc, char *argv[]){
   
   cxxopts::OptionNames unmatched = result.unmatched();
   conf.inputFile = unmatched.size() > 0 ? unmatched[0] : nullptr;
-
+  #ifdef WIN32
+    LPSTR filePath[MAX_PATH];
+    GetModuleFileNameA(nullptr, *filePath, MAX_PATH);
+    std::string f = std::string(*filePath);
+    conf.exePath = f.substr(0, f.find_last_of("/\\"));
+    std::cout << conf.exePath;
+  #endif
   auto start = high_resolution_clock::now();
   Driver driver(conf);
   driver.compile();

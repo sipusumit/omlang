@@ -1,0 +1,2 @@
+extern print(s:string):void;
+extern input():string;

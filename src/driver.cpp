@@ -68,6 +68,6 @@ void Driver::compile(){
 
   // Compile to executable ==================================================
   std::cout << "Compiling " << tmpLLFile << " to a." O_EXT << "\n";
-  system(std::format("clang -o {} {} ./build/libstdom.a", config.outputFile, tmpLLFile).c_str());
+  system(std::format("clang -o {} {} {}/../lib/libstdom.a", config.outputFile, tmpLLFile, config.exePath).c_str());
   // ========================================================================
 }
