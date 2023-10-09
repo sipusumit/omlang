@@ -1,0 +1,4 @@
+fun main():int{
+  printf("name");
+  return 0;
+}

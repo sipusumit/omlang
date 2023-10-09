@@ -1,0 +1,10 @@
+extern print(s:string):void;
+extern input():string;
+
+fun main(): int{
+  let name:string = "Ayush\n";
+  print(name);
+  let a:string = input();
+  print(a);
+  return 0;
+}
