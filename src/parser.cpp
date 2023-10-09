@@ -52,7 +52,6 @@ std::shared_ptr<AST> Parser::parse_stmt(bool parseSColon){
     case TType::FUN:
     case TType::EXTERN:
       a = function_def();
-      // if(parseSColon) eat(TType::SCOLON).type == TType::SCOLON;
       break;
     case TType::LET:
     case TType::CONST:

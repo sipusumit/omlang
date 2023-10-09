@@ -17,7 +17,3 @@ char* input(){
   }
   return c;
 }
-// int main(){
-//   print("Hello");
-//   return 0;
-// }
