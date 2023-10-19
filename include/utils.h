@@ -4,6 +4,8 @@
 #include <vector>
 #include <sstream>
 #include <regex>
+#include<fstream>
+#include <sys/stat.h>
 
 #include<llvm/IR/Type.h>
 #include<llvm/IR/IRBuilder.h>
@@ -21,5 +23,8 @@ void unexpected(std::string_view file, std::string line, Token t);
 
 std::string parseString(std::string str);
 std::string basename(std::string path);
+std::string readFile(std::string path);
 
 llvm::Type* getTypefromStr(std::string_view type, llvm::IRBuilder<> *builder);
+
+bool fileExist(std::string path);

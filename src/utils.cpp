@@ -52,3 +52,18 @@ llvm::Type *getTypefromStr(std::string_view type, llvm::IRBuilder<> *builder)
   }
   return nullptr;
 }
+
+bool fileExist(std::string path)
+{
+  struct stat buffer;
+  return (stat(path.c_str(), &buffer) == 0);
+}
+
+std::string readFile(std::string path){
+  std::ifstream t(path);
+  std::stringstream buffer;
+  buffer << t.rdbuf();
+  std::string s = buffer.str();
+  t.close();
+  return s; 
+}

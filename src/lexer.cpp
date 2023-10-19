@@ -12,6 +12,7 @@ fifo_map<std::string,TType> PATTERNS = {
     {R"(^string(?=[^a-zAZ0-9_]))", TType::T_STRING},
     {R"(^void(?=[^a-zAZ0-9_]))", TType::T_VOID},
     {R"(^return(?=[^a-zAZ0-9_]))", TType::RETURN},
+    {R"(^\#use(?=[^a-zAZ0-9_]))", TType::USE},
     {R"(^fun(?=[^a-zAZ0-9_]))", TType::FUN},
     {R"(^let(?=[^a-zAZ0-9_]))", TType::LET},
     {R"(^const(?=[^a-zAZ0-9_]))", TType::CONST},

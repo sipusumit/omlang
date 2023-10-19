@@ -20,6 +20,7 @@ enum class TType{
   T_STRING,
   T_VOID,
   RETURN,
+  USE,
   FUN,
   LET,
   CONST,

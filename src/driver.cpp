@@ -2,12 +2,7 @@
 
 Driver::Driver(ZConfig config){
   this->config = config;
-  std::ifstream t(config.inputFile);
-  std::stringstream buffer;
-  buffer << t.rdbuf();
-  src = buffer.str();
-  parser = Parser(config.inputFile , src);
-  t.close();
+  parser = Parser(config.inputFile , readFile(config.inputFile));
 }
 
 void setupstd(llvm::LLVMContext *context, llvm::IRBuilder<> *builder, llvm::Module *module){

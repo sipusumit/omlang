@@ -28,6 +28,8 @@
 
 using namespace std::chrono;
 
+Config* Config::instancePtr = nullptr;
+
 int main(int argc, char *argv[]){
   // CLI Arguments
   cxxopts::Options arguments(basename(argv[0]), "A Toy Compiler Built using LLVM");
@@ -54,7 +56,9 @@ int main(int argc, char *argv[]){
   // Config for compiler
   ZConfig conf;
   conf.compileOnly = result.count("c") ? true : false;
+  Config::getInstance()->compileOnly = conf.compileOnly;
   conf.outputFile = result.count("o") ? result["o"].as<std::string>() : "a." O_EXT;
+  Config::getInstance()->outputFile = conf.outputFile;
   
   cxxopts::OptionNames unmatched = result.unmatched();
   conf.inputFile = unmatched.size() > 0 ? unmatched[0] : nullptr;
@@ -63,7 +67,11 @@ int main(int argc, char *argv[]){
     GetModuleFileNameA(nullptr, *filePath, MAX_PATH);
     std::string f = std::string(*filePath);
     conf.exePath = f.substr(0, f.find_last_of("/\\"));
-    std::cout << conf.exePath;
+    Config::getInstance()->exePath = conf.exePath;
+    // std::cout << conf.exePath;
+    // conf.exePath = "D:/projects/omlang/build/bin";
+    // Config::getInstance()->exePath = conf.exePath;
+
   #endif
   auto start = high_resolution_clock::now();
   Driver driver(conf);

@@ -39,7 +39,6 @@ void Parser::error(Token t){
 }
 
 std::vector<std::shared_ptr<AST>> Parser::parse(){
-  std::vector<std::shared_ptr<AST>> stmts;
   while(tokens[0].type != TType::TEOF){
     stmts.push_back(std::move(parse_stmt(true)));
   }
@@ -49,6 +48,10 @@ std::vector<std::shared_ptr<AST>> Parser::parse(){
 std::shared_ptr<AST> Parser::parse_stmt(bool parseSColon){
   std::shared_ptr<AST> a;
   switch (tokens[0].type){
+    case TType::USE:
+      a = parse_use();
+      if(parseSColon) eat(TType::SCOLON).type == TType::SCOLON;
+      break;
     case TType::FUN:
     case TType::EXTERN:
       a = function_def();
@@ -82,6 +85,19 @@ std::shared_ptr<AST> Parser::parse_stmt(bool parseSColon){
       break;
   }
   return a;
+}
+
+std::shared_ptr<AST> Parser::parse_use(){
+  eat(); // #use
+  std::string header = std::format("{}/../include/{}.om", Config::getInstance()->exePath, eat().value);
+  if(fileExist(header)){
+    Parser p(header,readFile(header));
+    std::vector<std::shared_ptr<AST>> _stmts = p.parse();
+    stmts.reserve(stmts.size() + _stmts.size());
+    stmts.insert(stmts.end(), _stmts.begin(), _stmts.end() - 1);
+    return _stmts.at(_stmts.size()-1);
+  }
+  return std::make_shared<AST>();
 }
 
 // func_decl

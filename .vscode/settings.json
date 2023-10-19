@@ -73,6 +73,7 @@
       "fstream": "cpp",
       "*.inc": "cpp",
       "*.def": "cpp",
-      "windows.h": "c"
+      "windows.h": "c",
+      "future": "cpp"
     }
 }
