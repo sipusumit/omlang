@@ -25,7 +25,7 @@ public:
   AST(){token = Token{};};
   AST(Token t): token(t){};
   virtual llvm::Value *codegen(llvm::LLVMContext *context, llvm::IRBuilder<> *builder, llvm::Module *module, std::shared_ptr<Env> env){
-    std::cout << "BASE \n";
+    // std::cout << "BASE \n";
     return nullptr;
   };
 };

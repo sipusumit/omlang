@@ -16,7 +16,7 @@ include_directories(${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINATIONS})
 
 # Macros =============================================
-add_compile_definitions(Z_VERSION="${CMAKE_PROJECT_VERSION}")
+add_compile_definitions(VERSION="${CMAKE_PROJECT_VERSION}")
 if(WIN32)
   add_compile_definitions(O_EXT="exe")
 else()

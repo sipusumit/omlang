@@ -29,6 +29,7 @@
 using namespace std::chrono;
 
 Config* Config::instancePtr = nullptr;
+Modules* Modules::instancePtr = nullptr;
 
 int main(int argc, char *argv[]){
   // CLI Arguments
@@ -52,6 +53,9 @@ int main(int argc, char *argv[]){
   if(result.count("help")){
     std::cout << arguments.help({}, true);
     return 0;
+  }else if(result.count("version")){
+    std::cout << "v" VERSION;
+    return 0;
   }
   // Config for compiler
   ZConfig conf;
@@ -63,9 +67,11 @@ int main(int argc, char *argv[]){
   cxxopts::OptionNames unmatched = result.unmatched();
   conf.inputFile = unmatched.size() > 0 ? unmatched[0] : nullptr;
   #ifdef WIN32
-    LPSTR filePath[MAX_PATH];
-    GetModuleFileNameA(nullptr, *filePath, MAX_PATH);
-    std::string f = std::string(*filePath);
+    // LPSTR filePath[MAX_PATH];
+    // GetModuleFileNameA(NULL, *filePath, MAX_PATH);
+    char filePath[MAX_PATH];
+    GetModuleFileName(NULL, filePath, MAX_PATH);
+    std::string f = std::string(filePath);
     conf.exePath = f.substr(0, f.find_last_of("/\\"));
     Config::getInstance()->exePath = conf.exePath;
     // std::cout << conf.exePath;

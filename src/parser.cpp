@@ -90,11 +90,13 @@ std::shared_ptr<AST> Parser::parse_stmt(bool parseSColon){
 std::shared_ptr<AST> Parser::parse_use(){
   eat(); // #use
   std::string header = std::format("{}/../include/{}.om", Config::getInstance()->exePath, eat().value);
+  if(Modules::getInstance()->has(header)) return std::make_shared<AST>();
   if(fileExist(header)){
     Parser p(header,readFile(header));
     std::vector<std::shared_ptr<AST>> _stmts = p.parse();
     stmts.reserve(stmts.size() + _stmts.size());
     stmts.insert(stmts.end(), _stmts.begin(), _stmts.end() - 1);
+    Modules::getInstance()->add(header);
     return _stmts.at(_stmts.size()-1);
   }
   return std::make_shared<AST>();

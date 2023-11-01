@@ -6,6 +6,7 @@
 #include <regex>
 #include<fstream>
 #include <sys/stat.h>
+#include<algorithm>
 
 #include<llvm/IR/Type.h>
 #include<llvm/IR/IRBuilder.h>
@@ -28,3 +29,28 @@ std::string readFile(std::string path);
 llvm::Type* getTypefromStr(std::string_view type, llvm::IRBuilder<> *builder);
 
 bool fileExist(std::string path);
+
+
+class Modules{
+private:
+  std::vector<std::string> list;
+  static Modules *instancePtr;
+  Modules(){};
+public:
+  Modules(const Modules& obj)= delete;
+  static Modules* getInstance(){
+    if(instancePtr == nullptr){
+      instancePtr = new Modules();
+      return instancePtr;
+    }else{
+      return instancePtr;
+    }
+  }
+  static bool has(std::string module){
+    return std::find(getInstance()->list.begin(), getInstance()->list.end(), module) != getInstance()->list.end();
+  }
+
+  static void add(std::string module){
+    getInstance()->list.push_back(module);
+  }
+};
