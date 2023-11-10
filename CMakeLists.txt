@@ -91,15 +91,26 @@ endif(WIN32)
 
 
 # LibOm ============================================
-# add_executable(libome libom/src/libom.c)
 add_library(stdom libom/src/libom.c)
 list(APPEND files_libom "libom/src/std.om")
+
+# SystemLibs ===================================
+if(MINGW)
+  get_filename_component(Mingw_Path ${CMAKE_CXX_COMPILER} PATH)
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libwinpthread-1.dll ${Mingw_Path}/libgcc_s_seh-1.dll ${Mingw_Path}/libstdc++-6.dll)
+endif(MINGW)
+include(InstallRequiredSystemLibraries)
+
 # Install ======================================
 install(TARGETS om 
 RUNTIME DESTINATION bin 
 LIBRARY DESTINATION lib 
 ARCHIVE DESTINATION lib
 )
+
+if(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
+install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System)
+endif(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
 
 # only required if making a installer
 # PREPEND_LLVM(files_to_install ${llvm_libs})
@@ -114,4 +125,5 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
 include(CPack)
 
-# message(STATUS ${files_to_install})
+# get_target_property(OUT om LINK_LIBRARIES)
+# message(STATUS ${OUT})
