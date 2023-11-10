@@ -1,10 +1,10 @@
 #use "std";
-#use "std";
 
 fun main(): int{
-  let name:string = "Ayush\n";
+  let message:string = "HHE\n";
+  print(message);
+  let name:string = input();
+  print("Hello ");
   print(name);
-  let a:string = input();
-  print(a);
   return 0;
 }
