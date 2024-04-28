@@ -92,7 +92,7 @@ endif(WIN32)
 
 # LibOm ============================================
 add_library(stdom libom/src/libom.c)
-list(APPEND files_libom "libom/src/std.om")
+# list(APPEND files_libom "libom/src/std.om")
 
 # SystemLibs ===================================
 if(MINGW)
@@ -108,14 +108,15 @@ LIBRARY DESTINATION lib
 ARCHIVE DESTINATION lib
 )
 
-if(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
-install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System)
-endif(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
+# if(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
+# install(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT System)
+# endif(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
 
 # only required if making a installer
 # PREPEND_LLVM(files_to_install ${llvm_libs})
 # install(FILES ${files_to_install} DESTINATION bin)
-install(FILES ${files_libom} DESTINATION include)
+install(DIRECTORY libom/include/ DESTINATION include)
+install(DIRECTORY libom/lib/ DESTINATION lib)
 install(TARGETS stdom LIBRARY DESTINATION libs)
 
 # CPack ========================================

@@ -1,0 +1,2 @@
+extern cosmicSpit(s:string):void;
+extern galacticReceive():string;

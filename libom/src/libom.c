@@ -1,13 +1,13 @@
 #include<unistd.h>
 #include<stdlib.h>
 
-void print(char *s){
-  write(STDOUT_FILENO, s,sizeof(s));
+void cosmicSpit(char *s){
+  write(STDOUT_FILENO, s, strlen(s));
 };
 
-char* input(){
-  char *c = (char *)calloc(100, sizeof(char));
-  read(STDIN_FILENO, c, 99);
+char* galacticReceive(){
+  char *c = (char *)calloc(256, sizeof(char));
+  read(STDIN_FILENO, c, 255);
   int i = 0;
   while(c[i] != '\0'){
     i++;

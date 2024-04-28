@@ -1,4 +1,10 @@
-fun main():int{
-  printf("name");
-  return 0;
+#use "std";
+
+fun bigBang(): int{
+  let message:string = "What is your name\n";
+  cosmicSpit(message);
+  let name:string = galacticReceive();
+  cosmicSpit("Hello ");
+  cosmicSpit(name);
+  return 69;
 }

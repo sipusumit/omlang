@@ -32,7 +32,6 @@ void Driver::compile(){
   llvm::LLVMContext context = llvm::LLVMContext();
   std::shared_ptr<llvm::Module> module = std::make_shared<llvm::Module>("test", context);
   module->setSourceFileName(config.inputFile);
-  module->setTargetTriple(LLVMGetDefaultTargetTriple());
   llvm::IRBuilder<> builder(context);
 
   std::shared_ptr<Env> env = std::make_shared<Env>(src,config.inputFile);
@@ -50,19 +49,65 @@ void Driver::compile(){
   // }
 
   // SAVE IR TO FILE ===============================================
-  std::string tmpLLFile = basename(config.inputFile) + ".ll";
-  std::error_code EC;
-  llvm::raw_fd_ostream OS(tmpLLFile, EC);
-  if(EC){
-    std::cout << "Error creating output stream";
+  if(config.compileOnly){
+    std::string tmpLLFile = basename(config.inputFile) + ".ll";
+    std::error_code EC;
+    llvm::raw_fd_ostream OS(tmpLLFile, EC);
+    if(EC){
+      std::cout << "Error creating output stream";
+    }
+    std::cout << "Writing to file " << tmpLLFile << "\n";
+    module->print(OS,nullptr);
+    OS.flush();
+    return;
   }
-  std::cout << "Writing to file " << tmpLLFile << "\n";
-  module->print(OS,nullptr);
-  OS.flush();
   // ===============================================================
 
+  // GENERATE OBJECT FILE ==========================================
+  auto TargetTriple = llvm::sys::getDefaultTargetTriple();
+  llvm::InitializeAllTargetInfos();
+  llvm::InitializeAllTargets();
+  llvm::InitializeAllTargetMCs();
+  llvm::InitializeAllAsmParsers();
+  llvm::InitializeAllAsmPrinters();
+
+  std::string Error;
+  auto Target = llvm::TargetRegistry::lookupTarget(TargetTriple, Error);
+  if(!Target){
+    llvm::errs() << Error;
+    exit(1);
+  }
+
+  auto CPU = "generic";
+  auto Features = "";
+
+  llvm::TargetOptions opt;
+  auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, opt, llvm::Reloc::PIC_);
+  module->setDataLayout(TargetMachine->createDataLayout());
+  module->setTargetTriple(TargetTriple);
+
+  std::error_code EC2;
+  llvm::raw_fd_ostream dest(basename(config.inputFile) + ".o", EC2, llvm::sys::fs::OF_None);
+
+  if (EC2) {
+    llvm::errs() << "Could not open file: " << EC2.message();
+    exit(1);
+  }
+
+  llvm::legacy::PassManager pass;
+  auto FileType = llvm::CodeGenFileType::CGFT_ObjectFile;
+
+  if (TargetMachine->addPassesToEmitFile(pass, dest, nullptr, FileType)) {
+    llvm::errs() << "TargetMachine can't emit a file of this type";
+    exit(1);
+  }
+
+  pass.run(*module);
+  dest.flush();
+  //================================================================
+
   // Compile to executable ==================================================
-  std::cout << "Compiling " << tmpLLFile << " to a." O_EXT << "\n";
-  system(std::format("clang -o {} {} {}/../lib/libstdom.a", config.outputFile, tmpLLFile, config.exePath).c_str());
+  // std::cout << "Compiling " << tmpLLFile << " to a." O_EXT << "\n";
+  // system(std::format("clang -o {} {} {}/../lib/libstdom.a", config.outputFile, tmpLLFile, config.exePath).c_str());
   // ========================================================================
 }
